@@ -1,0 +1,23 @@
+{
+    "name": "@irshaad/agent-worker",
+    "version": "1.0.0",
+    "main": "src/index.ts",
+    "scripts": {
+        "dev": "tsx watch src/index.ts",
+        "build": "tsc"
+    },
+    "dependencies": {
+        "@livekit/agents": "latest",
+        "@livekit/agents-plugin-openai": "latest",
+        "@livekit/agents-plugin-silero": "latest",
+        "@livekit/protocol": "latest",
+        "@irshaad/shared-types": "workspace:*",
+        "dotenv": "^16.0.0"
+    },
+    "devDependencies": {
+        "tsx": "^4.0.0",
+        "typescript": "^5.0.0",
+        "@types/node": "^20.0.0",
+        "@irshaad/tsconfig": "workspace:*"
+    }
+}

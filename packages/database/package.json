@@ -1,0 +1,14 @@
+{
+  "name": "@irshaad/database",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "@irshaad/tsconfig": "workspace:*"
+  }
+}

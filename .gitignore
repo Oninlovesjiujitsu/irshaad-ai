@@ -49,6 +49,8 @@ ehthumbs.db
 .claude/
 .cursor/
 .gemini/
+.agents/
+
 
 # Local databases
 *.db

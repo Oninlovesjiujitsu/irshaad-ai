@@ -28,7 +28,7 @@ export default function InterviewRoomPage() {
   if (!authorized || !token || !serverUrl || !sessionId) {
     return (
       <div className="min-h-screen flex items-center justify-center text-foreground">
-        <div className="p-6 max-w-sm text-center backdrop-blur-md bg-card border border-border rounded-2xl">
+        <div className="p-6 max-w-sm text-center backdrop-blur-xl bg-white/[0.02] border border-white/[0.08] rounded-2xl">
           <AlertCircle className="w-10 h-10 text-red-400 mx-auto mb-4" />
           <h2 className="text-lg font-bold mb-2">Invalid Interview Session</h2>
           <p className="text-sm text-muted-foreground mb-6">

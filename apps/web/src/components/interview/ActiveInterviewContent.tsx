@@ -116,7 +116,7 @@ export function ActiveInterviewContent({ sessionId }: { sessionId: string }) {
       </div>
 
       {/* Control Panel */}
-      <div className="w-full max-w-md backdrop-blur-xl bg-card border border-border p-6 rounded-3xl shadow-xl flex flex-col items-center gap-6">
+      <div className="w-full max-w-md backdrop-blur-xl bg-white/[0.02] border border-white/[0.08] p-6 rounded-3xl shadow-xl flex flex-col items-center gap-6">
         {/* Status Text */}
         <div className="text-center text-sm">
           {connectionState === ConnectionState.Connecting && (

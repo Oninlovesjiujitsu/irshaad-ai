@@ -128,7 +128,7 @@ export default function ResumeUpload({ onSessionCreated }: ResumeUploadProps) {
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             placeholder="Paste the job description you are preparing for..."
-            className="w-full min-h-[120px] p-4 rounded-xl bg-card border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans text-sm resize-none"
+            className="w-full min-h-[120px] p-4 rounded-xl backdrop-blur-md bg-white/[0.02] border border-white/[0.08] text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans text-sm resize-none"
           />
         </div>
 
@@ -144,7 +144,7 @@ export default function ResumeUpload({ onSessionCreated }: ResumeUploadProps) {
             className={`border border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-300 flex flex-col items-center justify-center min-h-[150px] ${
               file
                 ? "border-primary/50 bg-primary/5"
-                : "border-border hover:border-primary/30 hover:bg-card/50"
+                : "border-white/[0.08] hover:border-primary/30 hover:bg-white/[0.02]"
             }`}
           >
             <input

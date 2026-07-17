@@ -20,20 +20,20 @@ export function HowItWorksSection() {
   ];
 
   return (
-    <section className="py-20 px-6 max-w-6xl mx-auto">
+    <section id="how-it-works" className="py-24 px-6 max-w-6xl mx-auto">
       <div className="text-center mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">How It Works</h2>
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">A seamless pipeline designed to get you ready for the real thing in three simple steps.</p>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4 px-4">How It Works</h2>
+        <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">A seamless pipeline designed to get you ready for the real thing in three simple steps.</p>
       </div>
 
       <div className="grid md:grid-cols-3 gap-8">
         {steps.map((step, index) => (
-          <div key={index} className="flex flex-col items-center text-center p-6 rounded-2xl bg-card border border-border">
-            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 border border-primary/20">
+          <div key={index} className="flex flex-col items-center text-center p-6 rounded-2xl backdrop-blur-xl bg-white/[0.02] border border-white/[0.08] hover:border-primary/50 transition-all duration-300 cursor-pointer active:scale-[0.98]">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 sm:mb-6 border border-primary/20">
               {step.icon}
             </div>
-            <h3 className="text-xl font-bold text-foreground mb-3">{step.title}</h3>
-            <p className="text-muted-foreground">{step.description}</p>
+            <h3 className="text-lg sm:text-xl font-bold text-foreground mb-2 sm:mb-3">{step.title}</h3>
+            <p className="text-sm sm:text-base text-muted-foreground">{step.description}</p>
           </div>
         ))}
       </div>

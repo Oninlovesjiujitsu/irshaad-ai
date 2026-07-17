@@ -36,7 +36,7 @@
   }
 
   .dark {
-    --background: 0 0% 0%;
+    --background: 140 25% 3%;
     --foreground: 0 0% 100%;
 
     --card: 140 40% 8%;
@@ -60,9 +60,15 @@
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 140 60% 70%;
-    --input: 140 60% 70%;
+    --border: 140 20% 18%;
+    --input: 140 20% 18%;
     --ring: 85 100% 50%;
+
+    /* Mesh Gradient Blob Colors (HSLA) */
+    --mesh-blob-1: hsla(85, 100%, 45%, 0.18);
+    --mesh-blob-2: hsla(142, 75%, 35%, 0.20);
+    --mesh-blob-3: hsla(165, 80%, 35%, 0.18);
+    --mesh-blob-4: hsla(263, 70%, 45%, 0.15);
   }
 }
 
@@ -70,9 +76,10 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
-    background: linear-gradient(to bottom, hsl(140, 40%, 10%), hsl(0, 0%, 0%));
+    background: linear-gradient(to bottom, hsl(140, 40%, 14%), hsl(140, 25%, 3%));
     background-attachment: fixed;
     min-height: 100vh;
   }
@@ -86,7 +93,8 @@
   height: 100vh;
   pointer-events: none;
   z-index: 5;
-  opacity: 0.12; /* Subtle, organic grain */
+  opacity: 0.12;
+  /* Subtle, organic grain */
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
@@ -95,33 +103,44 @@
 /* -------------------------------------------------------------------------- */
 
 @keyframes mesh-blob-1 {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(0px, 0px) scale(1);
   }
+
   33% {
     transform: translate(30px, -40px) scale(1.1);
   }
+
   66% {
     transform: translate(-20px, 20px) scale(0.9);
   }
 }
 
 @keyframes mesh-blob-2 {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(0px, 0px) scale(1.05);
   }
+
   50% {
     transform: translate(-40px, 40px) scale(0.95);
   }
 }
 
 @keyframes mesh-blob-3 {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate(0px, 0px) scale(0.95);
   }
+
   40% {
     transform: translate(50px, 20px) scale(1.1);
   }
+
   75% {
     transform: translate(-20px, -30px) scale(1);
   }
@@ -133,10 +152,12 @@
     animation: mesh-blob-1 25s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     will-change: transform;
   }
+
   .animate-mesh-2 {
     animation: mesh-blob-2 30s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     will-change: transform;
   }
+
   .animate-mesh-3 {
     animation: mesh-blob-3 20s ease-in-out infinite;
     will-change: transform;
@@ -146,9 +167,102 @@
 /* Performance optimizations for mobile screens (max-width: 768px) */
 @media (max-width: 768px) {
   .mesh-blob {
-    filter: blur(80px) !important; /* Smaller blur values are substantially faster for the GPU to render */
+    filter: blur(80px) !important;
+    /* Smaller blur values are substantially faster for the GPU to render */
   }
-  .animate-mesh-1, .animate-mesh-2, .animate-mesh-3 {
-    animation-duration: 40s !important; /* Slow down motion on mobile to conserve CPU/battery */
+
+  .animate-mesh-1,
+  .animate-mesh-2,
+  .animate-mesh-3 {
+    animation-duration: 40s !important;
+    /* Slow down motion on mobile to conserve CPU/battery */
+  }
+}
+
+/* Ensure Supabase Auth submit/primary buttons have bold black text for cleanliness and readability */
+.auth-widget-card button[type="submit"],
+.auth-widget-card .supabase-auth-ui_ui-button[type="submit"] {
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+/* Floating Animations for Hero text tags */
+@keyframes float-drift-1 {
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-12px) rotate(1deg);
+  }
+}
+
+@keyframes float-drift-2 {
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-8px) rotate(-1deg);
+  }
+}
+
+@keyframes float-drift-3 {
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-15px) rotate(2deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-float-1 {
+    animation: float-drift-1 6s ease-in-out infinite;
+  }
+
+  .animate-float-2 {
+    animation: float-drift-2 7s ease-in-out infinite;
+  }
+
+  .animate-float-3 {
+    animation: float-drift-3 8s ease-in-out infinite;
+  }
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Custom Auth Component Styles                                               */
+/* -------------------------------------------------------------------------- */
+@layer components {
+  .auth-card {
+    @apply w-full backdrop-blur-xl bg-white/[0.02] border border-white/[0.08] p-6 sm:p-8 rounded-3xl shadow-lg;
+  }
+
+  .auth-btn-google {
+    @apply w-full h-11 rounded-xl bg-white text-slate-900 hover:bg-slate-100 font-bold flex items-center justify-center gap-3 transition-all duration-300 active:scale-[0.98] disabled:opacity-50 text-sm cursor-pointer;
+  }
+
+  .auth-divider-line {
+    @apply flex-1 h-px bg-white/[0.08];
+  }
+
+  .auth-divider-text {
+    @apply px-3 text-xs text-slate-500 uppercase tracking-wider;
+  }
+
+  .auth-input {
+    @apply w-full h-11 px-4 rounded-xl bg-slate-950/40 border border-white/[0.08] text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all font-sans text-sm;
+  }
+
+  .auth-btn-submit {
+    @apply w-full h-11 rounded-xl bg-primary text-primary-foreground font-bold hover:shadow-glow transition-all duration-300 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer text-sm;
   }
 }

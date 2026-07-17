@@ -32,17 +32,17 @@ export default function Navbar() {
       </div>
 
       {user && (
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border text-sm text-foreground">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md bg-white/[0.02] border border-white/[0.08] text-sm text-foreground">
             <User className="w-4 h-4 text-primary" />
-            <span className="max-w-[150px] truncate font-mono">{user.email}</span>
+            <span className="hidden sm:inline-block max-w-[150px] truncate font-mono">{user.email}</span>
           </div>
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/30 text-red-400 text-sm font-medium transition-all duration-300"
+            className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/30 text-red-400 text-sm font-medium transition-all duration-300"
           >
             <LogOut className="w-4 h-4" />
-            Sign Out
+            <span className="hidden sm:inline">Sign Out</span>
           </button>
         </div>
       )}

@@ -108,7 +108,7 @@ export default function ResumeUpload({ onSessionCreated }: ResumeUploadProps) {
       className="w-full backdrop-blur-xl bg-white/[0.02] border border-white/[0.08] p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col"
     >
       <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-        <Sparkles className="w-5 h-5 text-indigo-400" /> Start a Mock Interview
+        <Sparkles className="w-5 h-5 text-primary" /> Start a Mock Interview
       </h2>
 
       {error && (
@@ -128,7 +128,7 @@ export default function ResumeUpload({ onSessionCreated }: ResumeUploadProps) {
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             placeholder="Paste the job description you are preparing for..."
-            className="w-full min-h-[120px] p-4 rounded-xl bg-white/[0.02] border border-white/[0.08] text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all font-sans text-sm resize-none"
+            className="w-full min-h-[120px] p-4 rounded-xl bg-card border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all font-sans text-sm resize-none"
           />
         </div>
 
@@ -143,8 +143,8 @@ export default function ResumeUpload({ onSessionCreated }: ResumeUploadProps) {
             onClick={() => fileInputRef.current?.click()}
             className={`border border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-300 flex flex-col items-center justify-center min-h-[150px] ${
               file
-                ? "border-indigo-500/50 bg-indigo-500/[0.02]"
-                : "border-white/10 hover:border-white/20 hover:bg-white/[0.01]"
+                ? "border-primary/50 bg-primary/5"
+                : "border-border hover:border-primary/30 hover:bg-card/50"
             }`}
           >
             <input
@@ -156,7 +156,7 @@ export default function ResumeUpload({ onSessionCreated }: ResumeUploadProps) {
             />
             {file ? (
               <div className="flex flex-col items-center gap-3">
-                <div className="p-3 bg-indigo-500/10 rounded-xl border border-indigo-500/20 text-indigo-400">
+                <div className="p-3 bg-primary/10 rounded-xl border border-primary/20 text-primary">
                   <FileText className="w-8 h-8" />
                 </div>
                 <div className="text-white text-sm font-medium truncate max-w-[250px]">
@@ -186,7 +186,7 @@ export default function ResumeUpload({ onSessionCreated }: ResumeUploadProps) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full h-12 rounded-xl bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-600 hover:to-pink-600 text-white font-medium flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/15 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+          className="w-full h-12 rounded-xl bg-primary text-primary-foreground hover:shadow-glow font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
         >
           {loading ? (
             <>

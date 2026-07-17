@@ -19,6 +19,11 @@ export default function Dashboard() {
         router.push("/");
       } else {
         setSession(session);
+        if (typeof window !== "undefined" && window.location.hash.includes("access_token")) {
+          setTimeout(() => {
+            window.history.replaceState(null, "", window.location.pathname);
+          }, 0);
+        }
       }
       setLoading(false);
     });
@@ -54,20 +59,17 @@ export default function Dashboard() {
 
   if (loading || !session) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#030304] text-white">
+      <div className="min-h-screen flex items-center justify-center text-foreground">
         <div className="flex flex-col items-center gap-4">
-          <BrainCircuit className="w-12 h-12 text-indigo-500 animate-pulse" />
-          <p className="text-gray-400 font-mono text-sm">Verifying Session...</p>
+          <BrainCircuit className="w-12 h-12 text-primary animate-pulse" />
+          <p className="text-muted-foreground font-mono text-sm">Verifying Session...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#030304] text-slate-100 flex flex-col relative overflow-hidden">
-      {/* Decorative Gradients */}
-      <div className="absolute top-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-tr from-indigo-900/20 to-pink-900/0 blur-[130px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[-20%] w-[50vw] h-[50vw] rounded-full bg-gradient-to-bl from-purple-900/20 to-indigo-900/0 blur-[120px] pointer-events-none" />
+    <main className="min-h-screen flex flex-col relative overflow-hidden">
 
       <Navbar />
 

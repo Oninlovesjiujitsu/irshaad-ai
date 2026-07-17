@@ -23,8 +23,8 @@ export default function Navbar() {
   return (
     <nav className="w-full backdrop-blur-md bg-white/[0.02] border-b border-white/[0.08] sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
       <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push("/dashboard")}>
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-pink-500 flex items-center justify-center border border-white/10">
-          <Mic className="w-5 h-5 text-white" />
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center border border-border">
+          <Mic className="w-5 h-5 text-primary-foreground" />
         </div>
         <span className="font-extrabold text-xl tracking-tight text-white bg-clip-text bg-gradient-to-r from-white to-slate-400">
           Irshaad AI
@@ -33,8 +33,8 @@ export default function Navbar() {
 
       {user && (
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08] text-sm text-slate-300">
-            <User className="w-4 h-4 text-indigo-400" />
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border text-sm text-foreground">
+            <User className="w-4 h-4 text-primary" />
             <span className="max-w-[150px] truncate font-mono">{user.email}</span>
           </div>
           <button

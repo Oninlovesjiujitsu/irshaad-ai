@@ -50,7 +50,7 @@ export default function HistoryList() {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
       </div>
     );
   }
@@ -97,7 +97,7 @@ export default function HistoryList() {
               >
                 <div className="flex-1 min-w-0 pr-4">
                   <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                    <span className="text-xs text-indigo-400 font-mono flex items-center gap-1">
+                    <span className="text-xs text-primary font-mono flex items-center gap-1">
                       <Calendar className="w-3 h-3" /> {date}
                     </span>
                     <span
@@ -154,10 +154,10 @@ export default function HistoryList() {
                             </div>
                           </div>
                           <div>
-                            <h5 className="text-xs font-bold uppercase tracking-wider text-indigo-400 mb-2 font-mono flex items-center gap-1">
+                            <h5 className="text-xs font-bold uppercase tracking-wider text-primary mb-2 font-mono flex items-center gap-1">
                               <FileText className="w-4 h-4" /> Transcript / Notes
                             </h5>
-                            <div className="text-sm text-slate-300 bg-indigo-500/[0.01] border border-indigo-500/10 p-4 rounded-xl whitespace-pre-wrap font-sans leading-relaxed">
+                            <div className="text-sm text-slate-300 bg-primary/[0.01] border border-primary/10 p-4 rounded-xl whitespace-pre-wrap font-sans leading-relaxed">
                               {summary.transcript || "Transcript loading or unavailable."}
                             </div>
                           </div>

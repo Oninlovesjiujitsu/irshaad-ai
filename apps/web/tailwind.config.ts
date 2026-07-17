@@ -51,6 +51,9 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      boxShadow: {
+        glow: "0 0 10px 2px hsl(var(--primary) / 0.5)",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

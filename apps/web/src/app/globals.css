@@ -77,3 +77,78 @@
     min-height: 100vh;
   }
 }
+
+/* Noise overlay utilizing SVG fractalNoise */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0.12; /* Subtle, organic grain */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* -------------------------------------------------------------------------- */
+/* Dynamic Mesh Keyframe Animations (optimized for GPU)                       */
+/* -------------------------------------------------------------------------- */
+
+@keyframes mesh-blob-1 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -40px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+
+@keyframes mesh-blob-2 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1.05);
+  }
+  50% {
+    transform: translate(-40px, 40px) scale(0.95);
+  }
+}
+
+@keyframes mesh-blob-3 {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(0.95);
+  }
+  40% {
+    transform: translate(50px, 20px) scale(1.1);
+  }
+  75% {
+    transform: translate(-20px, -30px) scale(1);
+  }
+}
+
+/* Base mesh animations (only active when reduced motion is NOT requested) */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-mesh-1 {
+    animation: mesh-blob-1 25s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    will-change: transform;
+  }
+  .animate-mesh-2 {
+    animation: mesh-blob-2 30s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    will-change: transform;
+  }
+  .animate-mesh-3 {
+    animation: mesh-blob-3 20s ease-in-out infinite;
+    will-change: transform;
+  }
+}
+
+/* Performance optimizations for mobile screens (max-width: 768px) */
+@media (max-width: 768px) {
+  .mesh-blob {
+    filter: blur(80px) !important; /* Smaller blur values are substantially faster for the GPU to render */
+  }
+  .animate-mesh-1, .animate-mesh-2, .animate-mesh-3 {
+    animation-duration: 40s !important; /* Slow down motion on mobile to conserve CPU/battery */
+  }
+}

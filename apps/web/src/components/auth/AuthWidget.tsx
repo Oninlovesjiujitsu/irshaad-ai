@@ -109,11 +109,11 @@ export function AuthWidget({ view, title }: AuthWidgetProps) {
     );
   }
 
-  const submitText = 
-    view === "sign_in" 
-      ? "Sign In" 
-      : view === "sign_up" 
-        ? "Create Account" 
+  const submitText =
+    view === "sign_in"
+      ? "Sign In"
+      : view === "sign_up"
+        ? "Create Account"
         : "Send Reset Link";
 
   return (
@@ -204,8 +204,8 @@ export function AuthWidget({ view, title }: AuthWidgetProps) {
                   Password
                 </label>
                 {view === "sign_in" && (
-                  <Link 
-                    href="/forgot-password" 
+                  <Link
+                    href="/forgot-password"
                     className="text-xs text-slate-400 hover:text-white transition-colors"
                   >
                     Forgot Password?

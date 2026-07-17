@@ -1,5 +1,5 @@
 import { voice, llm, type JobContext } from '@livekit/agents';
-import * as openai from '@livekit/agents-plugin-openai';
+import * as google from '@livekit/agents-plugin-google';
 import { z } from 'zod';
 import { SUMMARY_STREAM_TOPIC, STATUS_STREAM_TOPIC } from '@irshaad/shared-types';
 import { buildSummaryInstructions } from './prompt.js';
@@ -78,12 +78,12 @@ async function generateSummary(agent: voice.Agent): Promise<string> {
     content: `Here is the full interview transcript:\n\n${transcript}`,
   });
 
-  const summaryLLM = new openai.LLM({
-    model: 'gpt-4o',
+  const summaryLLM = new google.LLM({
+    model: 'gemini-2.0-flash',
   });
 
   try {
-    const stream = summaryLLM.chat({ chatCtx });
+    const stream = await summaryLLM.chat({ chatCtx });
     let out = '';
     for await (const chunk of stream) {
       if (chunk.delta?.content) {

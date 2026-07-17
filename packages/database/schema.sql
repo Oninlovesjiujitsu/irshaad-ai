@@ -46,3 +46,7 @@ CREATE POLICY "Users can view their own interview summaries" ON public.interview
 
 -- Allow the backend service role to bypass RLS to insert summaries after an interview
 -- (assuming the backend uses the service_role key, it bypasses RLS automatically)
+
+-- Grant required permissions to Supabase default roles
+GRANT ALL ON public.sessions TO anon, authenticated, service_role;
+GRANT ALL ON public.interview_summaries TO anon, authenticated, service_role;

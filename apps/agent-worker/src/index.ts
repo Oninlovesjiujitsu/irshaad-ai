@@ -1,14 +1,12 @@
-import 'dotenv/config';
+import './env.js';
 import {
   type JobContext,
-  type JobProcess,
   ServerOptions,
   cli,
   defineAgent,
   voice,
 } from '@livekit/agents';
-import * as silero from '@livekit/agents-plugin-silero';
-import * as openai from '@livekit/agents-plugin-openai';
+import * as google from '@livekit/agents-plugin-google';
 import { fileURLToPath } from 'node:url';
 import { CoachAgent } from './coach.js';
 import { buildCoachInstructions } from './prompt.js';
@@ -18,12 +16,7 @@ import { supabaseAdmin } from '@irshaad/database';
 const AGENT_NAME = process.env.LIVEKIT_AGENT_NAME ?? 'interview-coach';
 
 export default defineAgent({
-  prewarm: async (proc: JobProcess) => {
-    proc.userData.vad = await silero.VAD.load();
-  },
   entry: async (ctx: JobContext) => {
-    const vad = ctx.proc.userData.vad as silero.VAD;
-
     // Parse session ID from room metadata
     let sessionId: string | undefined;
     try {
@@ -65,33 +58,7 @@ export default defineAgent({
       sessionData.resume_text
     );
 
-    const session = new voice.AgentSession({
-      vad,
-      stt: new openai.STT(),
-      llm: new openai.LLM({ model: 'gpt-4o' }),
-      tts: new openai.TTS({
-        model: 'tts-1',
-        voice: 'alloy',
-      }),
-      turnHandling: {
-        // Interview answers need more pause room than casual chat.
-        // 1.2 s min gives candidates time to collect thoughts mid-sentence.
-        endpointing: {
-          minDelay: 1200,
-          maxDelay: 4000,
-        },
-        // Require at least 2 words before treating user speech as an
-        // interruption, reducing false positives from filler sounds.
-        interruption: {
-          minWords: 2,
-          resumeFalseInterruption: true,
-          falseInterruptionTimeout: 2000,
-        },
-      },
-    });
-
     let ended = false;
-
     const endSession = async (transcript: string, summary: string) => {
       if (ended) return;
       ended = true;
@@ -140,6 +107,16 @@ export default defineAgent({
       }
     });
 
+    const model = new google.realtime.RealtimeModel({
+      model: "gemini-3.1-flash-live-preview",
+      instructions: instructions + "\n\nGreet the candidate warmly, confirm the role being practiced, briefly explain that you will ask a mix of behavioral and role-specific questions one at a time, and ask your first question. Speak first.",
+      temperature: 0.8,
+    });
+
+    const session = new voice.AgentSession({
+      llm: model as any,
+    });
+
     const agent = new CoachAgent({
       instructions,
       room: ctx.room,
@@ -147,14 +124,8 @@ export default defineAgent({
       onEnd: endSession,
     });
 
-    // Start voice pipeline, connect participant, and speak greeting
-    await session.start({ agent, room: ctx.room });
     await ctx.connect();
-
-    session.generateReply({
-      instructions:
-        'Greet the candidate warmly, confirm the role being practiced (from the job description in your system prompt), briefly explain that you will ask a mix of behavioral and role-specific questions one at a time, and ask your first question.',
-    });
+    await session.start({ agent, room: ctx.room });
   },
 });
 

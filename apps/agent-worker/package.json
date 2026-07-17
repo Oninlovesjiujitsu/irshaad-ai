@@ -1,6 +1,7 @@
 {
     "name": "@irshaad/agent-worker",
     "version": "1.0.0",
+    "type": "module",
     "main": "src/index.ts",
     "scripts": {
         "dev": "tsx watch src/index.ts",
@@ -12,7 +13,9 @@
         "@livekit/agents-plugin-silero": "latest",
         "@livekit/protocol": "latest",
         "@irshaad/shared-types": "workspace:*",
-        "dotenv": "^16.0.0"
+        "@irshaad/database": "workspace:*",
+        "dotenv": "^16.0.0",
+        "zod": "^3.22.4"
     },
     "devDependencies": {
         "tsx": "^4.0.0",

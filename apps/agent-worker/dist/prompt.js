@@ -5,11 +5,8 @@
  * brief feedback after each answer, and keeping a running mental note of
  * strengths and gaps for the end-of-session summary.
  */
-export function buildCoachInstructions(
-  jobDescription: string,
-  resume: string,
-): string {
-  return `You are an expert interview coach conducting a realistic mock interview.
+export function buildCoachInstructions(jobDescription, resume) {
+    return `You are an expert interview coach conducting a realistic mock interview.
 Your goal is to help the candidate practice for a specific role and give them useful, actionable feedback.
 
 ## Role being interviewed for
@@ -32,15 +29,14 @@ When the candidate signals they want to stop (phrases like "end the interview", 
 ## Tone
 Supportive, professional, and direct. You are a coach, not a judge. Celebrate strong answers and reframe weak ones as opportunities to improve.`;
 }
-
 /**
  * Returns the system prompt used when generating the post-interview summary.
  * Instructs the LLM to produce a structured Markdown document with specific
  * sections: overall impression, strengths, areas for improvement,
  * question-by-question notes, and recommended next steps.
  */
-export function buildSummaryInstructions(): string {
-  return `The interview is now complete. Based on the full conversation so far, produce a structured written summary for the candidate in Markdown. Use exactly these sections and headings:
+export function buildSummaryInstructions() {
+    return `The interview is now complete. Based on the full conversation so far, produce a structured written summary for the candidate in Markdown. Use exactly these sections and headings:
 
 # Interview Feedback
 

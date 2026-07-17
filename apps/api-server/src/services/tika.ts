@@ -1,33 +1,30 @@
-const TIKA_URL = process.env.TIKA_URL ?? 'http://localhost:9998';
-
-function sanitizeFilename(name: string): string {
-  return name.replace(/[^a-zA-Z0-9._-]/g, '_');
-}
+import pdfParse from 'pdf-parse';
+import mammoth from 'mammoth';
 
 export async function extractText(
   buffer: Buffer,
   filename: string
 ): Promise<string> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 30_000);
-  try {
-    const res = await fetch(`${TIKA_URL}/tika`, {
-      method: 'PUT',
-      headers: {
-        'Content-Disposition': `attachment; filename="${sanitizeFilename(filename)}"`,
-        Accept: 'text/plain',
-      },
-      body: buffer as any,
-      signal: controller.signal,
-    });
+  const extension = filename.split('.').pop()?.toLowerCase();
 
-    if (!res.ok) {
-      throw new Error(
-        `Tika extraction failed for "${filename}": ${res.status} ${await res.text()}`
-      );
+  try {
+    if (extension === 'pdf') {
+      const data = await pdfParse(buffer);
+      return data.text.trim();
+    } 
+    
+    if (extension === 'docx') {
+      const data = await mammoth.extractRawText({ buffer });
+      return data.value.trim();
     }
-    return (await res.text()).trim();
-  } finally {
-    clearTimeout(timeout);
+
+    if (extension === 'txt') {
+      return buffer.toString('utf-8').trim();
+    }
+
+    throw new Error(`Unsupported file type: .${extension}`);
+  } catch (error: any) {
+    throw new Error(`Extraction failed for "${filename}": ${error.message}`);
   }
 }
+

@@ -34,5 +34,5 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 // Start the server
 app.listen(PORT, () => {
   console.log(`[api-server] Running on port ${PORT}`);
-  console.log(`[api-server] Tika endpoint: ${process.env.TIKA_URL || 'http://localhost:9998'}`);
+  console.log(`[api-server] Native PDF/DOCX extraction enabled.`);
 });

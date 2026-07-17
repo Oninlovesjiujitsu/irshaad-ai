@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react";
 import { AlertCircle } from "lucide-react";
 import { ActiveInterviewContent } from "@/components/interview/ActiveInterviewContent";
 
-export default function InterviewRoomPage() {
+function InterviewRoomContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -58,5 +58,13 @@ export default function InterviewRoomPage() {
         <RoomAudioRenderer />
       </LiveKitRoom>
     </main>
+  );
+}
+
+export default function InterviewRoomPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-muted-foreground">Loading interview...</div>}>
+      <InterviewRoomContent />
+    </Suspense>
   );
 }

@@ -7,10 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Global middleware
-app.use(cors({
-  origin: '*', // For development, allow all. In production, specify frontend domain.
-  credentials: true
-}));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

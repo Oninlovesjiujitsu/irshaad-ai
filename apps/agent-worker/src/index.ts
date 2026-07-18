@@ -8,7 +8,7 @@ import {
 } from '@livekit/agents';
 import * as google from '@livekit/agents-plugin-google';
 import { fileURLToPath } from 'node:url';
-import { CoachAgent } from './coach.js';
+import { CoachAgent, buildTranscript, generateSummary } from './coach.js';
 import { buildCoachInstructions } from './prompt.js';
 import type { JobMetadata } from '@irshaad/shared-types';
 import { supabaseAdmin } from '@irshaad/database';
@@ -99,11 +99,31 @@ export default defineAgent({
       if (!ended) {
         ended = true;
         console.log(`[agent] Connection closed early for session: ${sessionId}. Cleaning up...`);
-        // Mark session as completed/aborted
+
+        // 1. Immediately transition state in database to prevent stuck-session cleanup race conditions
         await supabaseAdmin
           .from('sessions')
-          .update({ status: 'completed' })
+          .update({ status: 'disconnected' })
           .eq('id', sessionId);
+
+        // 2. Generate and save summary asynchronously if there is any dialogue
+        try {
+          const transcript = buildTranscript(agent.chatCtx);
+          if (transcript.trim()) {
+            console.log(`[agent] Generating feedback summary for disconnected session: ${sessionId}...`);
+            const summary = await generateSummary(transcript);
+            
+            await supabaseAdmin
+              .from('interview_summaries')
+              .insert({
+                session_id: sessionId,
+                transcript,
+                feedback: { summary },
+              });
+          }
+        } catch (summaryErr) {
+          console.error('[agent] Error generating/saving summary on early close:', summaryErr);
+        }
       }
     });
 

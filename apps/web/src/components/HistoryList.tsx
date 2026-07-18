@@ -106,7 +106,9 @@ export default function HistoryList() {
                           ? "bg-green-500/10 text-green-400 border border-green-500/20"
                           : session.status === "failed"
                           ? "bg-red-500/10 text-red-400 border border-red-500/20"
-                          : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                          : session.status === "disconnected"
+                          ? "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                          : "bg-slate-500/10 text-slate-400 border border-slate-500/20"
                       }`}
                     >
                       {session.status}
@@ -150,7 +152,7 @@ export default function HistoryList() {
                               <CheckCircle2 className="w-4 h-4" /> AI Feedback & Score
                             </h5>
                             <div className="text-sm text-slate-300 bg-green-500/[0.01] border border-green-500/10 p-4 rounded-xl whitespace-pre-wrap font-sans leading-relaxed">
-                              {summary.feedback || "Feedback loading or unavailable."}
+                              {summary.feedback?.summary || (typeof summary.feedback === 'string' ? summary.feedback : "Feedback loading or unavailable.")}
                             </div>
                           </div>
                           <div>

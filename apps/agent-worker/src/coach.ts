@@ -31,8 +31,8 @@ export class CoachAgent extends voice.Agent {
               topic: STATUS_STREAM_TOPIC,
             });
 
-            const transcript = buildTranscript(this);
-            const summary = await generateSummary(this);
+            const transcript = buildTranscript(this.chatCtx);
+            const summary = await generateSummary(transcript);
             
             await publishSummary(opts.room, summary);
             
@@ -50,8 +50,8 @@ export class CoachAgent extends voice.Agent {
 /**
  * Builds a plain-text transcript from the agent's chat history.
  */
-function buildTranscript(agent: voice.Agent): string {
-  return agent.chatCtx.items
+export function buildTranscript(chatCtx: llm.ChatContext): string {
+  return chatCtx.items
     .filter((item): item is llm.ChatMessage => item.type === 'message')
     .map(({ role, content }) => {
       const text = Array.isArray(content)
@@ -68,9 +68,7 @@ function buildTranscript(agent: voice.Agent): string {
 /**
  * Generates a structured Markdown summary of the interview.
  */
-async function generateSummary(agent: voice.Agent): Promise<string> {
-  const transcript = buildTranscript(agent);
-
+export async function generateSummary(transcript: string): Promise<string> {
   const chatCtx = llm.ChatContext.empty();
   chatCtx.addMessage({ role: 'system', content: buildSummaryInstructions() });
   chatCtx.addMessage({

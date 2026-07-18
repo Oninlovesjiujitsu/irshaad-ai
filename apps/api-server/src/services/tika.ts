@@ -1,5 +1,9 @@
-import pdfParse from 'pdf-parse';
+import { createRequire } from 'module';
 import mammoth from 'mammoth';
+
+const require = createRequire(import.meta.url);
+const pdfParse = require('pdf-parse');
+
 
 export async function extractText(
   buffer: Buffer,
@@ -11,8 +15,8 @@ export async function extractText(
     if (extension === 'pdf') {
       const data = await pdfParse(buffer);
       return data.text.trim();
-    } 
-    
+    }
+
     if (extension === 'docx') {
       const data = await mammoth.extractRawText({ buffer });
       return data.value.trim();

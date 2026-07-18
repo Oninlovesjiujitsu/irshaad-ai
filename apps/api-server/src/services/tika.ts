@@ -2,7 +2,9 @@ import { createRequire } from 'module';
 import mammoth from 'mammoth';
 
 const require = createRequire(import.meta.url);
-const pdfParse = require('pdf-parse');
+
+const rawPdfParse = require('pdf-parse');
+const pdfParse = rawPdfParse.default || rawPdfParse;
 
 
 export async function extractText(

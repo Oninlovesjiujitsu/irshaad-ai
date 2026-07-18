@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Menu, X, Mic, LogOut } from 'lucide-react';
+import { Menu, X, LogOut } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
@@ -105,11 +105,10 @@ export default function NavBar() {
 
   return (
     <nav
-      className={`fixed w-full top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled || isMenuOpen
+      className={`fixed w-full top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled || isMenuOpen
           ? 'py-3 bg-[#051109]/50 backdrop-blur-2xl border-b border-white/[0.08] shadow-[0_4px_30px_rgba(0,0,0,0.15)]'
           : 'py-5 bg-transparent'
-      }`}
+        }`}
     >
       <div className="w-full mx-auto px-6 md:px-12 lg:px-16 flex items-center justify-between">
         {/* Logo */}
@@ -118,9 +117,6 @@ export default function NavBar() {
           onClick={(e) => handleNavClick(e, '/#hero')}
           className="flex items-center gap-3 cursor-pointer group"
         >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-emerald-500 flex items-center justify-center border border-primary/20 shadow-[0_0_20px_rgba(133,255,0,0.15)] group-hover:shadow-[0_0_25px_rgba(133,255,0,0.25)] transition-all duration-300">
-            <Mic className="w-5 h-5 text-black font-bold" />
-          </div>
           <span className="relative text-xl font-extrabold z-10 tracking-tight text-white">
             Irshaad <span className="text-primary">AI</span>
           </span>

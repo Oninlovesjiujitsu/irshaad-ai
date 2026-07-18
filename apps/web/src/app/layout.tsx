@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans, Geist } from "next/font/google";
 import MeshBackground from "@/components/MeshBackground";
 import "./globals.css";
+import { cn } from "@/lib/utils";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 const displayFont = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-display",
@@ -21,8 +22,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={`${inter.variable} ${displayFont.variable} font-sans min-h-screen bg-background relative text-foreground`}>
+    <html lang="en" className={cn("dark", "font-sans", geist.variable)} suppressHydrationWarning>
+      <body className={`${geist.variable} ${displayFont.variable} font-sans min-h-screen bg-background relative text-foreground`}>
         {/* Reusable Grainy Mesh Gradient */}
         <MeshBackground />
 

@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { useState, useEffect } from "react";
 import dynamic from 'next/dynamic';
 
 const DecryptedText = dynamic(
@@ -14,10 +13,37 @@ const Magnet = dynamic(
   { ssr: false }
 );
 
+const COLORS = [
+  "var(--primary)",
+  "hsl(142, 75%, 45%)",
+  "hsl(165, 80%, 45%)",
+  "hsl(263, 70%, 60%)",
+  "hsl(190, 90%, 50%)",
+  "hsl(45, 100%, 55%)",
+];
+
+const TOPICS = [
+  "System Design",
+  "Behavioral Mock",
+  "Data Structures",
+  "Pacing & Tone",
+  "Confidence Boost",
+  "Resume Review",
+  "Mock Interviews",
+  "Clarity Check",
+  "Filler Words",
+  "STAR Method",
+  "Instant AI Feedback",
+  "Leadership Principles",
+  "Coding Challenge",
+  "Active Listening",
+  "Problem Solving"
+];
+
 interface FloatingTag {
   text: string;
-  className: string; // Positioning coordinates
-  animationClass: string; // CSS float loop speed/tilt class
+  className: string;
+  animationClass: string;
 }
 
 const Hero3DObject = dynamic(() => import('./Hero3DObject'), {
@@ -34,6 +60,18 @@ const FLOATING_TAGS: FloatingTag[] = [
 ];
 
 export function HeroSection() {
+  const [shuffledTopics, setShuffledTopics] = useState<{ name: string; color: string }[]>([]);
+
+  useEffect(() => {
+    const shuffled = [...TOPICS]
+      .sort(() => Math.random() - 0.5)
+      .map((name) => {
+        const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+        return { name, color };
+      });
+    setShuffledTopics(shuffled);
+  }, []);
+
   return (
     <section id="hero" className="relative pt-32 pb-20 px-6 flex flex-col items-center text-center overflow-x-clip">
       {/* 3D Core with Interactive Floating Tags */}
@@ -56,28 +94,37 @@ export function HeroSection() {
 
       {/* Cipher Decrypting Title */}
       <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-300 mb-6 font-display">
-        <DecryptedText text="Irshaad AI" animateOn="view" />
+        Irshaad
+        <span className="text-primary"> AI</span>
       </h1>
 
       <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mb-10 px-4 sm:px-0">
         Your real-time conversational AI Interview Coach. Practice with lifelike AI, get instant feedback, and land your dream job.
       </p>
 
-      <div className="flex flex-row gap-3 w-full max-w-sm sm:max-w-none mx-auto justify-center items-center px-4 sm:px-0">
-        <Link
-          href="/sign-up"
-          className="flex-1 sm:flex-none bg-primary text-primary-foreground px-4 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:shadow-glow transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base whitespace-nowrap"
-        >
-          <span className="hidden sm:inline">Start Practicing</span>
-          <span className="sm:hidden">Practice</span>
-          <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
-        </Link>
-        <Link
-          href="/login"
-          className="flex-1 sm:flex-none backdrop-blur-xl bg-white/[0.02] text-foreground border border-white/[0.08] px-4 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-white/[0.05] transition-all flex items-center justify-center text-sm sm:text-base whitespace-nowrap"
-        >
-          Login
-        </Link>
+      {/* Infinite Marquee Strip */}
+      <div className="w-screen overflow-hidden mt-2 py-4 border-y border-white/5 bg-white/[0.01] relative left-1/2 -translate-x-1/2">
+        <div className="flex animate-marquee w-max">
+          {[0, 1].map((copyIndex) => (
+            <div key={copyIndex} className="flex gap-12 sm:gap-20 px-6 sm:px-10 items-center">
+              {shuffledTopics.map((topic, idx) => (
+                <div
+                  key={`${copyIndex}-${idx}`}
+                  className="text-white/40 whitespace-nowrap font-display font-medium text-lg sm:text-2xl tracking-wide flex items-center gap-3 cursor-default hover:text-white transition-colors duration-300"
+                >
+                  <div
+                    className="w-2.5 h-2.5 rounded-full opacity-80 shrink-0"
+                    style={{
+                      backgroundColor: topic.color,
+                      boxShadow: `0 0 14px ${topic.color}`
+                    }}
+                  />
+                  {topic.name}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

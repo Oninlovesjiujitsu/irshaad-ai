@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
-import { Sparkles, BrainCircuit, Eye, EyeOff, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Sparkles, BrainCircuit, Eye, EyeOff, Loader2, AlertCircle, CheckCircle2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 interface AuthWidgetProps {
@@ -117,7 +117,7 @@ export function AuthWidget({ view, title }: AuthWidgetProps) {
         : "Send Reset Link";
 
   return (
-    <div className="z-10 w-full max-w-md flex flex-col items-center p-6">
+    <div className="z-10 w-full max-w-md flex flex-col items-center py-6">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -269,6 +269,22 @@ export function AuthWidget({ view, title }: AuthWidgetProps) {
             </Link>
           )}
         </div>
+      </motion.div>
+
+      {/* Back to Home Link */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="mt-6"
+      >
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-white transition-colors duration-300 group"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          <span>Back to Home</span>
+        </Link>
       </motion.div>
     </div>
   );

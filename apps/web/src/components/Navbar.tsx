@@ -23,9 +23,6 @@ export default function Navbar() {
   return (
     <nav className="w-full backdrop-blur-md bg-white/[0.02] border-b border-white/[0.08] sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
       <div className="flex items-center gap-3 cursor-pointer group" onClick={() => router.push("/dashboard")}>
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-emerald-500 flex items-center justify-center border border-primary/20 shadow-[0_0_20px_rgba(133,255,0,0.15)] group-hover:shadow-[0_0_25px_rgba(133,255,0,0.25)] transition-all duration-300">
-          <Mic className="w-5 h-5 text-black font-bold" />
-        </div>
         <span className="relative text-xl font-extrabold z-10 tracking-tight text-white">
           Irshaad <span className="text-primary">AI</span>
         </span>

@@ -124,8 +124,36 @@ export default defineAgent({
       onEnd: endSession,
     });
 
-    await ctx.connect();
-    await session.start({ agent, room: ctx.room });
+    session.on(voice.AgentSessionEventTypes.Error, async (errorEvent: any) => {
+      console.error('[agent] Session error:', errorEvent);
+      ended = true;
+      try {
+        await supabaseAdmin
+          .from('sessions')
+          .update({ status: 'failed' })
+          .eq('id', sessionId);
+      } catch (dbErr) {
+        console.error('[agent] Error setting session status to failed:', dbErr);
+      }
+      ctx.shutdown();
+    });
+
+    try {
+      await ctx.connect();
+      await session.start({ agent, room: ctx.room });
+    } catch (err) {
+      console.error('[agent] Error starting session:', err);
+      ended = true;
+      try {
+        await supabaseAdmin
+          .from('sessions')
+          .update({ status: 'failed' })
+          .eq('id', sessionId);
+      } catch (dbErr) {
+        console.error('[agent] Error setting session status to failed on startup:', dbErr);
+      }
+      ctx.shutdown();
+    }
   },
 });
 

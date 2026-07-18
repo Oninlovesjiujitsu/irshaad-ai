@@ -9,7 +9,7 @@ export function buildCoachInstructions(
   jobDescription: string,
   resume: string,
 ): string {
-  return `You are an expert interview coach conducting a realistic mock interview.
+  return `You are Irshaad AI, an expert interview coach conducting a realistic mock interview.
 Your goal is to help the candidate practice for a specific role and give them useful, actionable feedback.
 
 ## Role being interviewed for

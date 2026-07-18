@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 import {
   useConnectionState,
   useRemoteParticipants,
@@ -43,10 +44,40 @@ export function ActiveInterviewContent({ sessionId }: { sessionId: string }) {
 
   // If disconnected after starting, redirect back to dashboard
   useEffect(() => {
+    let active = true;
     if (hasStarted && connectionState === ConnectionState.Disconnected) {
-      router.push("/dashboard");
+      const checkSessionStatus = async () => {
+        // Wait 1 second for the agent worker's database update to propagate
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        
+        try {
+          const { data, error } = await supabase
+            .from("sessions")
+            .select("status")
+            .eq("id", sessionId)
+            .single();
+
+          if (!active) return;
+
+          if (data?.status === "failed") {
+            router.push("/dashboard?error=quota_exceeded");
+          } else {
+            router.push("/dashboard");
+          }
+        } catch (err) {
+          console.error("Error fetching session status:", err);
+          if (active) {
+            router.push("/dashboard");
+          }
+        }
+      };
+
+      checkSessionStatus();
     }
-  }, [connectionState, hasStarted, router]);
+    return () => {
+      active = false;
+    };
+  }, [connectionState, hasStarted, sessionId, router]);
 
   return (
     <div className="z-10 max-w-4xl w-full flex flex-col items-center justify-between min-h-[80vh] py-12 px-6">

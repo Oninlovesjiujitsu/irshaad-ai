@@ -6,12 +6,28 @@ import { supabase } from "@/lib/supabase";
 import Navbar from "@/components/Navbar";
 import ResumeUpload from "@/components/ResumeUpload";
 import HistoryList from "@/components/HistoryList";
-import { BrainCircuit } from "lucide-react";
+import { BrainCircuit, ShieldAlert } from "lucide-react";
 
 export default function Dashboard() {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const errorParam = params.get("error");
+      if (errorParam === "quota_exceeded") {
+        setErrorMessage(
+          "Mock Interview Coach error: The AI model's API quota limit has been exceeded. Please try again later."
+        );
+        const url = new URL(window.location.href);
+        url.searchParams.delete("error");
+        window.history.replaceState({}, "", url.pathname + url.search);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -72,6 +88,21 @@ export default function Dashboard() {
     <main className="min-h-screen flex flex-col relative overflow-hidden">
 
       <Navbar />
+
+      {errorMessage && (
+        <div className="z-10 max-w-7xl w-full mx-auto px-6 mt-4">
+          <div className="flex items-center gap-3 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm backdrop-blur-md">
+            <ShieldAlert className="w-5 h-5 flex-shrink-0" />
+            <p className="flex-1 font-medium">{errorMessage}</p>
+            <button
+              onClick={() => setErrorMessage(null)}
+              className="text-red-400 hover:text-red-300 font-medium transition-colors"
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="z-10 flex-1 max-w-7xl w-full mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Side: Upload Widget */}

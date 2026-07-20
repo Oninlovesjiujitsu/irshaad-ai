@@ -13,6 +13,7 @@ export interface CreateSessionResponse {
 
 export interface JobMetadata {
     sessionId: string;
+    instructions?: string;
 }
 
 export const SUMMARY_STREAM_TOPIC = 'interview.summary';

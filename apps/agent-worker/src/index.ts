@@ -9,7 +9,6 @@ import {
 import * as google from '@livekit/agents-plugin-google';
 import { fileURLToPath } from 'node:url';
 import { CoachAgent, buildTranscript, generateSummary } from './coach.js';
-import { buildCoachInstructions } from './prompt.js';
 import type { JobMetadata } from '@irshaad/shared-types';
 import { supabaseAdmin } from '@irshaad/database';
 
@@ -19,44 +18,28 @@ export default defineAgent({
   entry: async (ctx: JobContext) => {
     // Parse session ID from room metadata
     let sessionId: string | undefined;
+    let instructions: string | undefined;
     try {
       const meta = ctx.job.metadata ? (JSON.parse(ctx.job.metadata) as JobMetadata) : undefined;
       sessionId = meta?.sessionId;
+      instructions = meta?.instructions;
     } catch (err) {
       console.error('[agent] Error parsing job metadata:', err);
     }
 
-    if (!sessionId) {
-      console.error('[agent] missing sessionId in job metadata — aborting');
+    if (!sessionId || !instructions) {
+      console.error('[agent] missing sessionId or instructions in job metadata — aborting');
       await ctx.shutdown();
       return;
     }
 
     console.log(`[agent] Starting session for ID: ${sessionId}`);
 
-    // Fetch session details directly from Supabase
-    const { data: sessionData, error: sessionError } = await supabaseAdmin
-      .from('sessions')
-      .select('job_description, resume_text')
-      .eq('id', sessionId)
-      .single();
-
-    if (sessionError || !sessionData) {
-      console.error(`[agent] Failed to load session context for ${sessionId}:`, sessionError);
-      await ctx.shutdown();
-      return;
-    }
-
     // Set session status to active
     await supabaseAdmin
       .from('sessions')
       .update({ status: 'active' })
       .eq('id', sessionId);
-
-    const instructions = buildCoachInstructions(
-      sessionData.job_description,
-      sessionData.resume_text
-    );
 
     let ended = false;
     const endSession = async (transcript: string, summary: string) => {
@@ -181,5 +164,6 @@ cli.runApp(
   new ServerOptions({
     agent: fileURLToPath(import.meta.url),
     agentName: AGENT_NAME,
+    initializeProcessTimeout: 60 * 1000,
   }),
 );

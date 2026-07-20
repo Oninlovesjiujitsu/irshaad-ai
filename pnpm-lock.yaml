@@ -23,6 +23,9 @@ importers:
       '@irshaad/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
+      '@irshaad/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@livekit/agents':
         specifier: latest
         version: 1.5.2(@livekit/rtc-node@0.13.31)(typescript@5.9.3)(zod@3.25.76)

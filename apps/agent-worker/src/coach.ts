@@ -2,7 +2,7 @@ import { voice, llm, type JobContext } from '@livekit/agents';
 import * as google from '@livekit/agents-plugin-google';
 import { z } from 'zod';
 import { SUMMARY_STREAM_TOPIC, STATUS_STREAM_TOPIC } from '@irshaad/shared-types';
-import { buildSummaryInstructions } from './prompt.js';
+import { buildSummaryInstructions } from '@irshaad/utils';
 
 type Room = JobContext['room'];
 
@@ -33,9 +33,9 @@ export class CoachAgent extends voice.Agent {
 
             const transcript = buildTranscript(this.chatCtx);
             const summary = await generateSummary(transcript);
-            
+
             await publishSummary(opts.room, summary);
-            
+
             // Invoke the onEnd callback and pass transcript + summary
             await opts.onEnd(transcript, summary);
 
@@ -57,8 +57,8 @@ export function buildTranscript(chatCtx: llm.ChatContext): string {
       const text = Array.isArray(content)
         ? content.filter((c): c is string => typeof c === 'string').join(' ')
         : typeof content === 'string'
-        ? content
-        : '';
+          ? content
+          : '';
       return text ? `${role}: ${text}` : null;
     })
     .filter((line): line is string => line !== null)
@@ -77,7 +77,7 @@ export async function generateSummary(transcript: string): Promise<string> {
   });
 
   const summaryLLM = new google.LLM({
-    model: 'gemini-2.0-flash',
+    model: 'gemini-3.5-flash',
   });
 
   try {

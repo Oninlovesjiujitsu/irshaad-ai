@@ -6,6 +6,7 @@ import { RoomAgentDispatch, RoomConfiguration } from '@livekit/protocol';
 import { supabaseAdmin } from '@irshaad/database';
 import { extractText } from '../services/tika.js';
 import { requireAuth, AuthenticatedRequest } from '../middleware/auth.js';
+import { buildCoachInstructions } from '@irshaad/utils';
 
 const router = Router();
 
@@ -55,7 +56,7 @@ router.post(
         if (!ALLOWED_MIME_TYPES.has(req.file.mimetype)) {
           return res.status(400).json({ error: 'Invalid file type' });
         }
-        // Extract text using Apache Tika
+        // Extract text using local parsers (pdf-parse, mammoth)
         try {
           resumeText = await extractText(req.file.buffer, req.file.originalname);
         } catch (tikaError) {
@@ -108,11 +109,12 @@ router.post(
       });
 
       // Embed agent dispatch configuration
+      const instructions = buildCoachInstructions(jobDescription, resumeText);
       at.roomConfig = new RoomConfiguration({
         agents: [
           new RoomAgentDispatch({
             agentName: AGENT_NAME,
-            metadata: JSON.stringify({ sessionId }),
+            metadata: JSON.stringify({ sessionId, instructions }),
           }),
         ],
       });

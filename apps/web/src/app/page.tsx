@@ -3,6 +3,7 @@ import { HeroSection } from "@/components/landing/HeroSection";
 import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
 import { FeatureGridSection } from "@/components/landing/FeatureGridSection";
 import { AnalyticsPreviewSection } from "@/components/landing/AnalyticsPreviewSection";
+import FooterSection from "@/components/landing/FooterSection";
 import FloatBackToTheTop from "@/components/landing/FloatBackToTheTop";
 import LandingRedirect from "@/components/auth/LandingRedirect";
 
@@ -15,6 +16,7 @@ export default function Home() {
       <HowItWorksSection />
       <FeatureGridSection />
       <AnalyticsPreviewSection />
+      <FooterSection />
       <FloatBackToTheTop />
     </main>
   );

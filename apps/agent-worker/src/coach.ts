@@ -66,7 +66,7 @@ export function buildTranscript(chatCtx: llm.ChatContext): string {
 }
 
 /**
- * Generates a structured Markdown summary of the interview.
+ * Generates a structured JSON summary of the interview.
  */
 export async function generateSummary(transcript: string): Promise<string> {
   const chatCtx = llm.ChatContext.empty();
@@ -77,7 +77,7 @@ export async function generateSummary(transcript: string): Promise<string> {
   });
 
   const summaryLLM = new google.LLM({
-    model: 'gemini-3.5-flash',
+    model: 'gemini-3.1-flash-lite',
   });
 
   try {
@@ -88,10 +88,28 @@ export async function generateSummary(transcript: string): Promise<string> {
         out += chunk.delta.content;
       }
     }
-    return out.trim() || '# Interview Feedback\n\n_Empty summary._';
+
+    // Clean markdown code blocks if the LLM wrapped the JSON
+    out = out.trim();
+    if (out.startsWith('```json')) {
+      out = out.replace(/^```json\n/, '').replace(/\n```$/, '');
+    } else if (out.startsWith('```')) {
+      out = out.replace(/^```\n/, '').replace(/\n```$/, '');
+    }
+
+    // Try to parse to validate it's proper JSON
+    JSON.parse(out);
+
+    return out;
   } catch (err) {
     console.error('[agent] summary generation failed', err);
-    return '# Interview Feedback\n\n_Sorry — we were unable to generate your written summary. Please try another session._';
+    return JSON.stringify({
+      score: 0,
+      overall_impression: "Sorry — we were unable to generate your written summary. Please try another session.",
+      technical_corrections: [],
+      transcript_highlights: [],
+      recommended_next_steps: []
+    });
   }
 }
 

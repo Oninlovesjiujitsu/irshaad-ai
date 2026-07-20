@@ -171,6 +171,54 @@ router.get(
   }
 );
 
+// GET /session/:id/feedback
+// Returns the feedback for a specific session
+router.get(
+  '/:id/feedback',
+  requireAuth,
+  async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const user = req.user;
+      const sessionId = req.params.id;
+
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      // First check if the session exists and belongs to the user
+      const { data: session, error: fetchError } = await supabaseAdmin
+        .from('sessions')
+        .select('user_id')
+        .eq('id', sessionId)
+        .single();
+
+      if (fetchError || !session) {
+        console.error('[api-server] Error checking session ownership:', fetchError);
+        return res.status(404).json({ error: 'Session not found' });
+      }
+
+      if (session.user_id !== user.id) {
+        return res.status(403).json({ error: 'Unauthorized' });
+      }
+
+      const { data, error } = await supabaseAdmin
+        .from('interview_summaries')
+        .select('transcript, feedback')
+        .eq('session_id', sessionId)
+        .single();
+
+      if (error) {
+        return res.status(404).json({ error: 'Feedback not found' });
+      }
+
+      return res.json(data);
+    } catch (err) {
+      console.error('[api-server] Unexpected error fetching feedback:', err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+);
+
 // DELETE /session/:id
 // Deletes a session and its associated feedback (handled by cascading delete)
 router.delete(

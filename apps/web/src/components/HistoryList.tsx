@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, ChevronDown, ChevronUp, FileText, CheckCircle2, AlertCircle, Loader2, Trash2 } from "lucide-react";
+import SessionReport from "./SessionReport";
 
 export default function HistoryList() {
   const [sessions, setSessions] = useState<any[]>([]);
@@ -111,8 +112,6 @@ export default function HistoryList() {
       <div className="space-y-4">
         {sessions.map((session) => {
           const isExpanded = expandedSession === session.id;
-          const summary = session.interview_summaries?.[0];
-          const hasFeedback = !!summary;
           const date = new Date(session.created_at).toLocaleDateString(undefined, {
             month: "short",
             day: "numeric",
@@ -212,36 +211,7 @@ export default function HistoryList() {
                       </div>
 
                       {/* AI Feedback / Summary */}
-                      {hasFeedback ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <div>
-                            <h5 className="text-xs font-bold uppercase tracking-wider text-green-400 mb-2 font-mono flex items-center gap-1">
-                              <CheckCircle2 className="w-4 h-4" /> AI Feedback & Score
-                            </h5>
-                            <div className="text-sm text-slate-300 bg-green-500/[0.01] border border-green-500/10 p-4 rounded-xl whitespace-pre-wrap font-sans leading-relaxed">
-                              {summary.feedback?.summary || (typeof summary.feedback === 'string' ? summary.feedback : "Feedback loading or unavailable.")}
-                            </div>
-                          </div>
-                          <div>
-                            <h5 className="text-xs font-bold uppercase tracking-wider text-primary mb-2 font-mono flex items-center gap-1">
-                              <FileText className="w-4 h-4" /> Transcript / Notes
-                            </h5>
-                            <div className="text-sm text-slate-300 bg-primary/[0.01] border border-primary/10 p-4 rounded-xl whitespace-pre-wrap font-sans leading-relaxed">
-                              {summary.transcript || "Transcript loading or unavailable."}
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/10 text-amber-400/90 text-sm flex items-start gap-2">
-                          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                          <div>
-                            <p className="font-semibold">Feedback Pending</p>
-                            <p className="text-xs mt-0.5">
-                              If you recently completed this session, the AI agent is still compiling your feedback. Please refresh in a moment.
-                            </p>
-                          </div>
-                        </div>
-                      )}
+                      <SessionReport session={session} />
                     </div>
                   </motion.div>
                 )}

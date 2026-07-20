@@ -49,13 +49,21 @@ export default defineAgent({
       try {
         console.log(`[agent] Interview concluded for session: ${sessionId}. Saving summary...`);
 
+        // Parse the JSON string summary
+        let parsedSummary;
+        try {
+          parsedSummary = JSON.parse(summary);
+        } catch (e) {
+          parsedSummary = { overall_impression: summary };
+        }
+
         // Save transcript and feedback summary
         const { error: summaryError } = await supabaseAdmin
           .from('interview_summaries')
           .insert({
             session_id: sessionId,
             transcript,
-            feedback: { summary },
+            feedback: parsedSummary,
           });
 
         if (summaryError) {
@@ -96,12 +104,19 @@ export default defineAgent({
             console.log(`[agent] Generating feedback summary for disconnected session: ${sessionId}...`);
             const summary = await generateSummary(transcript);
             
+            let parsedSummary;
+            try {
+              parsedSummary = JSON.parse(summary);
+            } catch (e) {
+              parsedSummary = { overall_impression: summary };
+            }
+            
             await supabaseAdmin
               .from('interview_summaries')
               .insert({
                 session_id: sessionId,
                 transcript,
-                feedback: { summary },
+                feedback: parsedSummary,
               });
           }
         } catch (summaryErr) {

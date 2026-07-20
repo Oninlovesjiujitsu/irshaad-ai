@@ -35,29 +35,30 @@ Supportive, professional, and direct. You are a coach, not a judge. Celebrate st
 
 /**
  * Returns the system prompt used when generating the post-interview summary.
- * Instructs the LLM to produce a structured Markdown document with specific
- * sections: overall impression, strengths, areas for improvement,
- * question-by-question notes, and recommended next steps.
+ * Instructs the LLM to produce a structured JSON document matching the session report UI.
  */
 export function buildSummaryInstructions(): string {
-  return `The interview is now complete. Based on the full conversation so far, produce a structured written summary for the candidate in Markdown. Use exactly these sections and headings:
+  return `The interview is now complete. Based on the full conversation so far, produce a structured written summary for the candidate in JSON format.
+Return ONLY valid JSON. Do not use Markdown code blocks or any preamble.
 
-# Interview Feedback
+The JSON object must have exactly this schema:
+{
+  "score": number, // A score out of 100 based on the candidate's performance
+  "overall_impression": "string",
+  "technical_corrections": [
+    {
+      "original": "string", // A direct quote of something incorrect or imprecise the candidate said
+      "correction": "string" // The corrected version of what they should have said
+    }
+  ],
+  "transcript_highlights": [
+    {
+      "text": "string", // A short snippet (1-2 sentences) from the candidate's transcript containing filler words
+      "filler_words": ["string"] // An array of the filler words found in that snippet (e.g., ["um", "like", "you know"])
+    }
+  ],
+  "recommended_next_steps": ["string"] // An array of actionable preparation steps
+}
 
-## Overall impression
-A short paragraph capturing how the candidate performed overall.
-
-## Strengths
-A bulleted list of specific strengths observed, citing concrete moments from the conversation.
-
-## Areas for improvement
-A bulleted list of specific areas to work on, each paired with a concrete suggestion.
-
-## Question-by-question notes
-For each question you asked, one short bullet: the question (paraphrased) followed by a one-line note on the answer.
-
-## Recommended next steps
-A short bulleted list of concrete preparation steps tailored to this role and this candidate.
-
-Return ONLY the Markdown. Do not include any preamble, apology, or commentary outside the sections above.`;
+Ensure the output is strictly valid JSON.`;
 }

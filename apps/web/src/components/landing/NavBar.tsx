@@ -37,8 +37,10 @@ export default function NavBar() {
   }, []);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.refresh();
+    if (window.confirm("Are you sure you want to sign out?")) {
+      await supabase.auth.signOut();
+      router.refresh();
+    }
   };
 
   useEffect(() => {

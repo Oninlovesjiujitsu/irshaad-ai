@@ -171,4 +171,53 @@ router.get(
   }
 );
 
+// DELETE /session/:id
+// Deletes a session and its associated feedback (handled by cascading delete)
+router.delete(
+  '/:id',
+  requireAuth,
+  async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const user = req.user;
+      const sessionId = req.params.id;
+
+      if (!user) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      // First check if the session exists and belongs to the user
+      const { data: session, error: fetchError } = await supabaseAdmin
+        .from('sessions')
+        .select('user_id')
+        .eq('id', sessionId)
+        .single();
+
+      if (fetchError || !session) {
+        console.error('[api-server] Error checking session ownership:', fetchError);
+        return res.status(404).json({ error: 'Session not found' });
+      }
+
+      if (session.user_id !== user.id) {
+        return res.status(403).json({ error: 'Unauthorized' });
+      }
+
+      const { error: deleteError } = await supabaseAdmin
+        .from('sessions')
+        .delete()
+        .eq('id', sessionId);
+
+      if (deleteError) {
+        console.error('[api-server] DB error deleting session:', deleteError);
+        return res.status(500).json({ error: 'Failed to delete session' });
+      }
+
+      return res.status(200).json({ success: true });
+    } catch (err) {
+      console.error('[api-server] Unexpected error deleting session:', err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+);
+
 export default router;
+

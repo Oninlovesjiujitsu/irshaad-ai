@@ -3,13 +3,47 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, ChevronDown, ChevronUp, FileText, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { Calendar, ChevronDown, ChevronUp, FileText, CheckCircle2, AlertCircle, Loader2, Trash2 } from "lucide-react";
 
 export default function HistoryList() {
   const [sessions, setSessions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [expandedSession, setExpandedSession] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const handleDelete = async (id: string) => {
+    setDeletingId(id);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error("You must be logged in.");
+      }
+
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+      const response = await fetch(`${apiUrl}/session/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to delete session.");
+      }
+
+      setSessions((prev) => prev.filter((s) => s.id !== id));
+      setShowDeleteConfirm(null);
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || "Failed to delete session.");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
 
   useEffect(() => {
     fetchHistory();
@@ -118,9 +152,42 @@ export default function HistoryList() {
                     {session.job_description}
                   </h4>
                 </div>
-                <div className="text-slate-400">
-                  {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                <div className="flex items-center gap-3">
+                  {showDeleteConfirm === session.id ? (
+                    <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                      <span className="text-xs text-red-400 font-medium font-mono">Delete?</span>
+                      <button
+                        onClick={() => handleDelete(session.id)}
+                        disabled={deletingId === session.id}
+                        className="px-2.5 py-1 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-semibold border border-red-500/30 transition-all duration-200 disabled:opacity-50 flex items-center justify-center min-w-[40px] h-7"
+                      >
+                        {deletingId === session.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Yes"}
+                      </button>
+                      <button
+                        onClick={() => setShowDeleteConfirm(null)}
+                        disabled={deletingId === session.id}
+                        className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-semibold border border-white/[0.08] transition-all duration-200 disabled:opacity-50 h-7"
+                      >
+                        No
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowDeleteConfirm(session.id);
+                      }}
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-white/5 border border-transparent hover:border-white/[0.05] transition-all duration-200"
+                      title="Delete session"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                  <div className="text-slate-400">
+                    {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                  </div>
                 </div>
+
               </div>
 
               {/* Collapsible Area */}

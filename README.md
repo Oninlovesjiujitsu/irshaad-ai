@@ -35,14 +35,31 @@ Irshaad AI was built to provide accessible, intelligent, and highly responsive r
 - **Agent Worker**: A dedicated LiveKit worker running custom agent logic (`coach.ts`) that listens to user audio, processes conversational context, and responds in real-time.
 - **API Server**: An Express server handling heavy context-processing tasks, including file ingestion and document parsing via Apache Tika.
 - **Shared Packages**: Shared configurations (ESLint, TSConfig), UI components, database types, and utility functions live in the `packages/` directory, ensuring strict typing and reusability across all apps.
+## 🚀 Running the Agent Worker Locally (Recommended)
+
+Due to strict CPU limits (0.1 vCPU) and aggressive health-check timeouts on free cloud tiers (like Render or Hugging Face Spaces), the deployed agent may occasionally experience cold-start delays or forceful restarts when initializing the heavy WebRTC and Gemini WebSocket connections.
+
+For the best, zero-latency experience, we highly recommend running the `agent-worker` on your local machine. Because LiveKit acts as a central cloud router, your local worker will seamlessly pick up jobs from the production website!
+
+**Steps to run locally:**
+1. Clone the repository: `git clone https://github.com/Oninlovesjiujitsu/irshaad-ai.git`
+2. Install dependencies (from the monorepo root): `pnpm install`
+3. Configure your `.env` file in `apps/agent-worker/.env` with your `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`, and `GEMINI_API_KEY`.
+4. Start the worker: 
+   ```bash
+   pnpm --filter @irshaad/agent-worker dev
+   ```
+5. Go to the deployed production website and start an interview. The audio will stream directly to your local machine!
 
 ## 💭 How can it be improved?
 
-- Implement advanced RAG (Retrieval-Augmented Generation) within the API server for deeper, personalized coaching context.
-- Expand 3D web features with interactive data visualizations of the user's coaching progress.
-- Migrate context processing to Edge Functions where possible to reduce latency.
-- Add support for multilingual processing in the LiveKit voice agent worker.
-- Add comprehensive e2e testing (Playwright/Detox) across the Turborepo workspaces.
+- **Dedicated Infrastructure**: Migrate the background worker to a VPS or container host (like Fly.io or Koyeb) with dedicated CPU cores to bypass the CPU throttling and health-check restarts experienced on Render's free tier.
+- **Geographic Routing Optimization**: Dynamically spin up worker nodes in the closest region to the user (e.g., Singapore, Oregon, Frankfurt) to minimize the network path of the real-time audio streams.
+- **Persistent AI Memory**: Integrate a vector database (like Supabase pgvector) to store and recall feedback from previous sessions, allowing the AI to track user progress across multiple interviews.
+- **Advanced RAG (Retrieval-Augmented Generation)**: Implement dynamic context loading within the API server to feed company-specific documentation, wikis, or target job postings directly into the coach prompt.
+- **Visual Analytics Dashboard**: Build interactive progress tracking dashboards (e.g., using Recharts) to map the user's improvement in score, speech pacing, and feedback trends.
+- **Comprehensive E2E Testing**: Set up automated end-to-end testing utilizing Playwright for the Next.js web application and Detox for the React Native mobile client.
+
 
 ## Project Structure - Monorepo (Turborepo):
 
